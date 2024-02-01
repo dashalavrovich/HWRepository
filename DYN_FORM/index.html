@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DYN_FORM</title>
+  </head>
+  <body>
+    <script>
+      function createForm(formDef) {
+        const form = document.createElement("form");
+		  form.action="https://fe.it-academy.by/TestForm.php";
+		  form.method="get";
+        document.body.appendChild(form);
+        for (let i = 0; i < formDef.length; i++) {
+          let formElem = formDef[i];
+
+          switch (formElem.kind) {
+            case "longtext":
+              {
+                const div1 = document.createElement("div");
+                const div2 = document.createElement("div");
+                const label = document.createElement("label");
+                const text = document.createTextNode(formElem.label);
+                const input = document.createElement("input");
+                form.appendChild(div1);
+                form.appendChild(div2);
+                div1.appendChild(label);
+                label.appendChild(text);
+                div2.appendChild(input);
+                input.setAttribute("name", formElem.name);
+                input.style.cssText = "width:99%";
+                div1.style.cssText = "float: left; width: 10em";
+                div2.style.cssText = "margin-left: 10em";
+              }
+
+              break;
+
+            case "number":
+              {
+                const div1 = document.createElement("div");
+                const div2 = document.createElement("div");
+                const label = document.createElement("label");
+                const text = document.createTextNode(formElem.label);
+                const input = document.createElement("input");
+                form.appendChild(div1);
+                form.appendChild(div2);
+                div1.appendChild(label);
+                label.appendChild(text);
+                div2.appendChild(input);
+                input.setAttribute("name", formElem.name);
+                input.setAttribute("type", "number");
+                input.style.cssText = "width:5em";
+                div1.style.cssText = "float: left; width: 10em";
+                div2.style.cssText = "margin-left: 10em";
+              }
+
+              break;
+
+            case "shorttext":
+              {
+                const div1 = document.createElement("div");
+                const div2 = document.createElement("div");
+                const label = document.createElement("label");
+                const text = document.createTextNode(formElem.label);
+                const input = document.createElement("input");
+                form.appendChild(div1);
+                form.appendChild(div2);
+                div1.appendChild(label);
+                label.appendChild(text);
+                div2.appendChild(input);
+                input.setAttribute("name", formElem.name);
+                input.style.cssText = "width:50%";
+                div1.style.cssText = "float: left; width: 10em";
+                div2.style.cssText = "margin-left: 10em";
+              }
+
+              break;
+
+            case "combo":
+              {
+                const div1 = document.createElement("div");
+                const div2 = document.createElement("div");
+                const label = document.createElement("label");
+                const text = document.createTextNode(formElem.label);
+                const select = document.createElement("select");
+                form.appendChild(div1);
+                form.appendChild(div2);
+                div1.appendChild(label);
+                label.appendChild(text);
+                div2.appendChild(select);
+                select.setAttribute("name", formElem.name);
+                div1.style.cssText = "float: left; width: 10em";
+                div2.style.cssText = "margin-left: 10em";
+                let variantArr = formElem.variants;
+                for (let i = 0; i < variantArr.length; i++) {
+                  variantObj = variantArr[i];
+                  const option = document.createElement("option");
+                  const text = document.createTextNode(variantObj.text);
+                  select.appendChild(option);
+                  option.appendChild(text);
+                  option.setAttribute("value", variantObj.value);
+                  // select.value="2";
+                  select.selectedIndex = 2;
+                }
+              }
+
+              break;
+
+            case "radio":
+              {
+                const div1 = document.createElement("div");
+                const div2 = document.createElement("div");
+                const label = document.createElement("label");
+                const text = document.createTextNode(formElem.label);
+                form.appendChild(div1);
+                form.appendChild(div2);
+                div1.appendChild(label);
+                label.appendChild(text);
+
+                let variantArr = formElem.variants;
+                for (let i = 0; i < variantArr.length; i++) {
+                  variantObj = variantArr[i];
+                  const input = document.createElement("input");
+                  input.type = "radio";
+                  input.name = formElem.name;
+                  input.value = variantObj.value;
+                  const span = document.createElement("span");
+                  const spanText = document.createTextNode(variantObj.text);
+                  div2.appendChild(input);
+                  div2.appendChild(span);
+                  span.appendChild(spanText);
+                }
+                document.querySelectorAll(
+                  'input[type="radio"]'
+                )[1].checked = true;
+                div1.style.cssText = "float: left; width: 10em";
+                div2.style.cssText = "margin-left: 10em";
+              }
+
+              break;
+
+            case "check":
+              {
+                const div1 = document.createElement("div");
+                const div2 = document.createElement("div");
+                const label = document.createElement("label");
+                const text = document.createTextNode(formElem.label);
+                form.appendChild(div1);
+                form.appendChild(div2);
+                div1.appendChild(label);
+                label.appendChild(text);
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.name = formElem.name;
+                input.checked = true;
+                div2.appendChild(input);
+                div1.style.cssText = "float: left; width: 10em";
+                div2.style.cssText = "margin-left: 10em";
+              }
+
+              break;
+
+            case "memo":
+              {
+                const div1 = document.createElement("div");
+                const div2 = document.createElement("div");
+                const label = document.createElement("label");
+                const text = document.createTextNode(formElem.label);
+                form.appendChild(div1);
+                form.appendChild(div2);
+                div1.appendChild(label);
+                label.appendChild(text);
+                const textarea = document.createElement("textarea");
+                textarea.name = formElem.name;
+                div2.appendChild(textarea);
+                textarea.style.cssText = "width:99%";
+              }
+
+              break;
+
+            case "submit":
+              {
+                const input = document.createElement("input");
+                input.type = "submit";
+                input.value = formElem.caption;
+                form.appendChild(input);
+              }
+              break;
+          }
+        }
+      }
+
+      const formDef1 = [
+        { label: "Название сайта:", kind: "longtext", name: "sitename" },
+        { label: "URL сайта:", kind: "longtext", name: "siteurl" },
+        { label: "Посетителей в сутки:", kind: "number", name: "visitors" },
+        { label: "E-mail для связи:", kind: "shorttext", name: "email" },
+        {
+          label: "Рубрика каталога:",
+          kind: "combo",
+          name: "division",
+          variants: [
+            { text: "здоровье", value: 1 },
+            { text: "домашний уют", value: 2 },
+            { text: "бытовая техника", value: 3 },
+          ],
+        },
+        {
+          label: "Размещение:",
+          kind: "radio",
+          name: "payment",
+          variants: [
+            { text: "бесплатное", value: 1 },
+            { text: "платное", value: 2 },
+            { text: "VIP", value: 3 },
+          ],
+        },
+        { label: "Разрешить отзывы:", kind: "check", name: "votes" },
+        { label: "Описание сайта:", kind: "memo", name: "description" },
+        { caption: "Опубликовать", kind: "submit" },
+      ];
+      createForm(formDef1);
+
+      const br = document.createElement("br");
+      document.body.appendChild(br);
+		const hr = document.createElement("hr");
+      document.body.appendChild(hr);
+		const br2 = document.createElement("br");
+      document.body.appendChild(br2);
+
+      const formDef2 = [
+        { label: "Фамилия:", kind: "longtext", name: "lastname" },
+        { label: "Имя:", kind: "longtext", name: "firstname" },
+        { label: "Отчество:", kind: "longtext", name: "secondname" },
+        { label: "Возраст:", kind: "number", name: "age" },
+        { caption: "Зарегистрироваться", kind: "submit" },
+      ];
+      createForm(formDef2);
+    </script>
+  </body>
+</html>
