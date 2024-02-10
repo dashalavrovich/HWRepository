@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .strError {
+        color: red;
+        font-size: 10px;
+      }
+      td:first-child {
+        width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <form
+      name="INFO"
+      action="https://fe.it-academy.by/TestForm.php"
+      method="get"
+    >
+      <table>
+        <tr>
+          <td><label for="developers">Разработчики:</label></td>
+          <td>
+            <input type="text" id="developers" name="DEVELOPERS" />
+            <span id="developError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="name">Название сайта:</label></td>
+          <td>
+            <input type="text" id="name" name="NAME" />
+            <span id="nameError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="url">URL сайта:</label></td>
+          <td>
+            <input type="text" id="url" name="URL" />
+            <span id="urlError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="date">Дата запуска сайта:</label></td>
+          <td>
+            <input type="date" id="date" name="DATE" />
+            <span id="dateError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="visitors">Посетителей в сутки:</label></td>
+          <td>
+            <input type="text" id="visitors" name="VISITORS" />
+            <span id="visitorsError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="mail">E-mail для связи:</label></td>
+          <td>
+            <input type="text" id="mail" name="MAIL" />
+            <span id="mailError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="catalog">Рубрика каталога:</label></td>
+          <td>
+            <select id="catalog" name="CATALOG">
+              <option value="1">здоровье</option>
+              <option value="2">домашний уют</option>
+              <option value="3">бытовая техника</option>
+            </select>
+            <span id="catalogError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label>Размещение:</label></td>
+          <td>
+            <div>
+              <input type="radio" id="location1" name="LOCATION" value="1" />
+              <label for="location1">бесплатное</label>
+              <input type="radio" id="location2" name="LOCATION" value="2" />
+              <label for="location2">платное</label>
+              <input type="radio" id="location3" name="LOCATION" value="3" />
+              <label for="location3">VIP</label>
+              <span id="locationError" class="strError"></span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="reviews">Разрешить отзывы:</label></td>
+          <td>
+            <input type="checkbox" id="reviews" name="REVIEWS" />
+            <span id="reviewsError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="description">Описание сайта:</label></td>
+        </tr>
+        <tr>
+          <td colspan="2" id="tdArea">
+            <textarea
+              class="tagFloat"
+              id="description"
+              cols="41"
+              rows="4"
+              name="DESCRIPTION"
+            ></textarea>
+            <span id="descriptionError" class="strError"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><input type="submit" value="Опубликовать" /></td>
+        </tr>
+      </table>
+    </form>
+    <script>
+      const formElem = document.forms.INFO;
+      formElem.addEventListener("submit", formSubmit);
+
+      const developElem = formElem.elements.DEVELOPERS;
+      developElem.addEventListener("blur", () => {
+        developValid(false);
+      });
+
+      const nameElem = formElem.elements.NAME;
+      nameElem.addEventListener("blur", () => {
+        nameValid(false);
+      });
+
+      const urlElem = formElem.elements.URL;
+      urlElem.addEventListener("blur", () => {
+        urlValid(false);
+      });
+
+      const dateElem = formElem.elements.DATE;
+      dateElem.addEventListener("blur", () => {
+        dateValid(false);
+      });
+
+      const visitorsElem = formElem.elements.VISITORS;
+      visitorsElem.addEventListener("blur", () => {
+        visitorsValid(false);
+      });
+
+      const mailElem = formElem.elements.MAIL;
+      mailElem.addEventListener("blur", () => {
+        mailValid(false);
+      });
+
+      const catalogElem = formElem.elements.CATALOG;
+      catalogElem.addEventListener("change", () => {
+        catalogValid(false);
+      });
+
+      const locationElem = formElem.elements.LOCATION;
+
+      locationElem[0].addEventListener("change", () => {
+        locationValid(false);
+      });
+      locationElem[1].addEventListener("change", () => {
+        locationValid(false);
+      });
+      locationElem[2].addEventListener("change", () => {
+        locationValid(false);
+      });
+
+      const reviewsElem = formElem.elements.REVIEWS;
+      reviewsElem.addEventListener("change", () => {
+        reviewsValid(false);
+      });
+
+      const descriptionElem = formElem.elements.DESCRIPTION;
+      descriptionElem.addEventListener("blur", () => {
+        descriptionValid(false);
+      });
+
+      function developValid(focusOnErr) {
+        let errCount = 0;
+        const developElemErr = document.getElementById("developError");
+        const developValue = developElem.value;
+        if (developValue) {
+          developElemErr.innerHTML = "";
+        } else {
+          developElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) developElem.focus();
+        }
+        return errCount;
+      }
+
+      function nameValid(focusOnErr) {
+        let errCount = 0;
+        const nameElemErr = document.getElementById("nameError");
+        const nameValue = nameElem.value;
+        if (nameValue) {
+          nameElemErr.innerHTML = "";
+        } else {
+          nameElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) nameElem.focus();
+        }
+        return errCount;
+      }
+
+      function urlValid(focusOnErr) {
+        let errCount = 0;
+        const urlElemErr = document.getElementById("urlError");
+        const urlValue = urlElem.value;
+        if (urlValue) {
+          urlElemErr.innerHTML = "";
+        } else {
+          urlElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) urlElem.focus();
+        }
+        return errCount;
+      }
+
+      function dateValid(focusOnErr) {
+        let errCount = 0;
+        const dateElemErr = document.getElementById("dateError");
+        const dateValue = dateElem.value;
+        if (dateValue) {
+          dateElemErr.innerHTML = "";
+        } else {
+          dateElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) dateElem.focus();
+        }
+        return errCount;
+      }
+
+      function visitorsValid(focusOnErr) {
+        let errCount = 0;
+        const visitorsElemErr = document.getElementById("visitorsError");
+        const visitorsValue = visitorsElem.value;
+        if (visitorsValue) {
+          visitorsElemErr.innerHTML = "";
+        } else {
+          visitorsElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) visitorsElem.focus();
+        }
+        return errCount;
+      }
+
+      function mailValid(focusOnErr) {
+        let errCount = 0;
+        const mailElemErr = document.getElementById("mailError");
+        const mailValue = mailElem.value;
+        if (mailValue) {
+          mailElemErr.innerHTML = "";
+        } else {
+          mailElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) {
+            mailElem.focus();
+          }
+        }
+        return errCount;
+      }
+
+      function catalogValid(focusOnErr) {
+        let errCount = 0;
+        const catalogElemErr = document.getElementById("catalogError");
+        // const catalogValue = catalogElem.value;
+
+        var selectedOption = catalogElem.options[catalogElem.selectedIndex];
+
+        if (selectedOption.value == "1") {
+          catalogElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) catalogElem.focus();
+        } else {
+          catalogElemErr.innerHTML = "";
+        }
+        return errCount;
+      }
+
+      function locationValid(focusOnErr) {
+        let errCount = 0;
+        const locationElemErr = document.getElementById("locationError");
+        const locationValue = locationElem.value;
+        if (locationValue) {
+          locationElemErr.innerHTML = "";
+        } else {
+          locationElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) {
+            locationElem[0].scrollIntoView();
+          }
+        }
+        return errCount;
+      }
+
+      function reviewsValid(focusOnErr) {
+        let errCount = 0;
+        const reviewsElemErr = document.getElementById("reviewsError");
+        const reviewsValue = reviewsElem.checked;
+        if (reviewsValue == true) {
+          reviewsElemErr.innerHTML = "";
+        } else {
+          reviewsElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) {
+            reviewsElem.focus();
+          }
+        }
+        return errCount;
+      }
+
+      function descriptionValid(focusOnErr) {
+        let errCount = 0;
+        const descriptionElemErr = document.getElementById("descriptionError");
+        const descriptionValue = descriptionElem.value;
+        if (descriptionValue) {
+          descriptionElemErr.innerHTML = "";
+        } else {
+          descriptionElemErr.innerHTML = "поле не заполнено";
+          errCount++;
+          if (focusOnErr) descriptionElem.focus();
+        }
+        return errCount;
+      }
+
+      function formSubmit(eo) {
+        eo = eo || window.event;
+        let errCount = 0;
+        errCount += developValid(!errCount);
+        errCount += nameValid(!errCount);
+        errCount += urlValid(!errCount);
+        errCount += dateValid(!errCount);
+        errCount += visitorsValid(!errCount);
+        errCount += mailValid(!errCount);
+        errCount += catalogValid(!errCount);
+        errCount += locationValid(!errCount);
+        errCount += reviewsValid(!errCount);
+        errCount += descriptionValid(!errCount);
+
+        if (errCount) {
+          eo.preventDefault();
+        }
+      }
+    </script>
+  </body>
+</html>
