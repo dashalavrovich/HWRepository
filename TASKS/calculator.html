@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+  </head>
+  <body>
+    <script>
+      class Calculator {
+        constructor() {
+          this.operands = [];
+        }
+        operand(a) {
+          this.operands.push(a);
+        }
+        operation(b) {
+          if (b == "+") {
+            let resultSum = 0;
+            for (let i = 0; i < this.operands.length; i++)
+              resultSum += this.operands[i];
+            return resultSum;
+          } else if (b == "*") {
+            let resultMult = 1;
+            for (let i = 0; i < this.operands.length; i++)
+              resultMult *= this.operands[i];
+            return resultMult;
+          }
+        }
+        clear() {
+          this.operands = [];
+        }
+        array() {
+          console.log(this.operands);
+        }
+      }
+
+      let calc = new Calculator();
+
+      calc.operand(5);
+      calc.operand(2);
+      calc.operand(3);
+      calc.array();
+      console.log(calc.operation("+")); // возвращает 10, т.е. результат сложения трёх операндов
+      console.log(calc.operation("*")); // возвращает 30, т.е. результат умножения трёх операндов
+      calc.clear(); // очищает список операндов, можно снова вызывать методы operand
+      calc.array();
+    </script>
+  </body>
+</html>
