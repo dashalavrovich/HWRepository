@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clock</title>
+  </head>
+  <body>
+    <div id="block1">
+      <label for="num">Введите число</label>
+      <input type="text" id="num" />
+      <input type="button" id="butNum" value="Отправить" />
+    </div>
+
+    <script>
+      const butNum = document.getElementById("butNum");
+      butNum.onclick = function () {
+        textNum = document.getElementById("num");
+        textNumValue = textNum.value;
+        buildClock(textNumValue);
+      };
+
+      function buildClock(diam) {
+        const block1 = document.getElementById("block1");
+        const clock = document.createElement("div");
+        document.body.replaceChild(clock, block1);
+
+        const centerX = diam / 2;
+        const centerY = centerX;
+
+        clock.style.borderRadius = "50%";
+        clock.style.width = diam + "px";
+        clock.style.height = diam + "px";
+        clock.style.background = "aqua";
+        clock.style.position = "relative";
+
+        const timeSpan = document.createElement("span");
+        clock.appendChild(timeSpan);
+        timeSpan.style.fontSize = diam / 15 + "px";
+        timeSpan.style.position = "absolute";
+        timeSpan.style.left = diam / 2.6 + "px";
+        timeSpan.style.top = diam / 5 + "px";
+
+        function formatDateTime(dt) {
+          const hours = dt.getHours();
+          const minutes = dt.getMinutes();
+          const seconds = dt.getSeconds();
+          return (
+            str0l(hours, 2) + ":" + str0l(minutes, 2) + ":" + str0l(seconds, 2)
+          );
+        }
+        function str0l(val, len) {
+          let strVal = val.toString();
+          while (strVal.length < len) strVal = "0" + strVal;
+          return strVal;
+        }
+
+        const secElem = document.createElement("div");
+        clock.appendChild(secElem);
+
+        secElem.style.borderRadius = "30%";
+        secElem.style.width = diam / 100 + "px";
+        secElem.style.height = diam / 3 + "px";
+        secElem.style.background = "yellow";
+        secElem.style.position = "absolute";
+        secElem.style.left = diam / 2 + "px";
+        secElem.style.top = diam / 6 + "px";
+        secElem.style.transformOrigin = "bottom";
+
+        const minElem = document.createElement("div");
+        clock.appendChild(minElem);
+
+        minElem.style.borderRadius = "30%";
+        minElem.style.width = diam / 60 + "px";
+        minElem.style.height = diam / 4 + "px";
+        minElem.style.background = "purple";
+        minElem.style.position = "absolute";
+        minElem.style.left = diam / 2 + "px";
+        minElem.style.top = diam / 4 + "px";
+        minElem.style.transformOrigin = "bottom";
+
+        const hourElem = document.createElement("div");
+        clock.appendChild(hourElem);
+
+        hourElem.style.borderRadius = "30%";
+        hourElem.style.width = diam / 40 + "px";
+        hourElem.style.height = diam / 5 + "px";
+        hourElem.style.background = "black";
+        hourElem.style.position = "absolute";
+        hourElem.style.left = diam / 2 + "px";
+        hourElem.style.top = diam / 3.3 + "px";
+        hourElem.style.transformOrigin = "bottom";
+
+        const numbersDistance = diam * 0.4;
+        const numbersRadius = diam / 20;
+
+        for (let h = 1; h <= 12; h++) {
+          const angle = (((360 / 12) * h) / 180) * Math.PI;
+          const numberX = centerX + Math.sin(angle) * numbersDistance;
+          const numberY = centerY - Math.cos(angle) * numbersDistance;
+
+          const numberElem = document.createElement("div");
+          numberElem.style.width = numbersRadius * 2 + "px";
+          numberElem.style.height = numbersRadius * 2 + "px";
+          numberElem.style.position = "absolute";
+          numberElem.style.left = numberX - numbersRadius + "px";
+          numberElem.style.top = numberY - numbersRadius + "px";
+          numberElem.style.background = "white";
+          numberElem.style.borderRadius = "50%";
+          clock.appendChild(numberElem);
+
+          numberElem.style.fontSize = diam / 15 + "px";
+          numberElem.style.lineHeight = numbersRadius * 2 + "px";
+          numberElem.style.textAlign = "center";
+          numberElem.innerHTML = h;
+        }
+
+        function pos() {
+          const time = new Date();
+
+          const secAngle = (360 / 60) * time.getSeconds();
+
+          secElem.style.transform = `rotate(${secAngle}deg)`;
+
+          const minAngle = (360 / 60) * time.getMinutes();
+
+          minElem.style.transform = `rotate(${minAngle}deg)`;
+
+          const hourAngle =
+            (360 / 12) * (time.getHours() + time.getMinutes() / 60);
+
+          hourElem.style.transform = `rotate(${hourAngle}deg)`;
+
+          timeSpan.innerHTML = formatDateTime(time);
+          setTimeout(pos, 1010 - time.getMilliseconds());
+        }
+        pos();
+      }
+    </script>
+  </body>
+</html>
