@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scales</title>
+  </head>
+  <body>
+    <h1>Scales (Object.create())</h1>
+    <script>
+      const ScalesProto = {
+        initProducts() {
+          this.products = [];
+        },
+        add(product) {
+          this.products.push(product);
+        },
+        getSumScale() {
+          let totalWeight = 0;
+          for (let prodElem of this.products) {
+            totalWeight += prodElem.getScale();
+          }
+          return totalWeight;
+        },
+
+        getNameList() {
+          let prodList = [];
+          for (let prodElem of this.products) {
+            prodList.push(prodElem.getName());
+          }
+          return prodList;
+        },
+      };
+
+      const ProductProto = {
+        initProduct(name, weight) {
+          this.name = name;
+          this.weight = weight;
+        },
+        getName() {
+          return this.name;
+        },
+
+        getScale() {
+          return this.weight;
+        },
+      };
+
+      const AppleProto = Object.create(ProductProto);
+
+      AppleProto.initApple = function (name, weight) {
+        ProductProto.initProduct.call(this, name, weight);
+      };
+
+      const TomatoProto = Object.create(ProductProto);
+
+      TomatoProto.initTomato = function (name, weight) {
+        ProductProto.initProduct.call(this, name, weight);
+      };
+
+      // объект класса Весы
+      const scale1 = Object.create(ScalesProto);
+      scale1.initProducts();
+
+      // объекты класса Apple
+      const apple1 = Object.create(AppleProto);
+      apple1.initApple("Гала", 125);
+
+      const apple2 = Object.create(AppleProto);
+      apple2.initApple("Белый налив", 135);
+
+      // объекты класса Tomato
+      const tomato1 = Object.create(TomatoProto);
+      tomato1.initTomato("Черри", 20);
+
+      const tomato2 = Object.create(TomatoProto);
+      tomato2.initTomato("Бычье сердце", 300);
+
+      scale1.add(apple1);
+      scale1.add(apple2);
+      scale1.add(tomato1);
+      scale1.add(tomato2);
+
+      console.log(scale1.getSumScale());
+      console.log(scale1.getNameList());
+    </script>
+  </body>
+</html>
