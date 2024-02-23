@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scales</title>
+  </head>
+  <body>
+    <h1>Scales (Classes ES6)</h1>
+    <script>
+      class Scales {
+        constructor() {
+          this.products = [];
+        }
+
+        add(product) {
+          this.products.push(product);
+        }
+
+        getSumScale() {
+          let totalWeight = 0;
+          for (let prodElem of this.products) {
+            totalWeight += prodElem.getScale();
+          }
+          return totalWeight;
+        }
+
+        getNameList() {
+          let prodList = [];
+          for (let prodElem of this.products) {
+            prodList.push(prodElem.getName());
+          }
+          return prodList;
+        }
+      }
+
+      class Product {
+        constructor(name, weight) {
+          this.name = name;
+          this.weight = weight;
+        }
+
+        getName() {
+          return this.name;
+        }
+
+        getScale() {
+          return this.weight;
+        }
+      }
+
+      class Apple extends Product {
+        constructor(name, weight) {
+          super(name, weight);
+        }
+      }
+
+      class Tomato extends Product {
+        constructor(name, weight) {
+          super(name, weight);
+        }
+      }
+
+      // объект класса Весы
+      const scale1 = new Scales();
+
+      // объекты класса Apple
+      const apple1 = new Apple("Гала", 125);
+      const apple2 = new Apple("Белый налив", 135);
+
+      // объекты класса Tomato
+      const tomato1 = new Tomato("Черри", 20);
+      const tomato2 = new Tomato("Бычье сердце", 300);
+
+      scale1.add(apple1);
+      scale1.add(apple2);
+      scale1.add(tomato1);
+      scale1.add(tomato2);
+
+      console.log(scale1.getSumScale());
+      console.log(scale1.getNameList());
+    </script>
+  </body>
+</html>
