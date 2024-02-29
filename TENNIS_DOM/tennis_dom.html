@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TENNIS_DOM</title>
+  </head>
+  <body>
+    <input type="button" value="start" onclick="start()" id="butStart" />
+    <div id="field">
+      <div id="leftRacket"></div>
+      <div id="ball"></div>
+      <div id="rightRacket"></div>
+    </div>
+    <script>
+      // style
+
+      const butStart = document.getElementById("butStart");
+      butStart.style.marginLeft = "400px";
+
+      const field = document.getElementById("field");
+      field.style.width = "500px";
+      field.style.height = "300px";
+      field.style.background = "yellow";
+      field.style.marginLeft = "auto";
+      field.style.marginRight = "auto";
+      field.style.marginTop = "50px";
+      field.style.position = "relative";
+
+      const leftRacket = document.getElementById("leftRacket");
+      leftRacket.style.width = "10px";
+      leftRacket.style.height = "80px";
+      leftRacket.style.background = "green";
+      leftRacket.style.position = "absolute";
+      leftRacket.style.top = "110px";
+
+      const rightRacket = document.getElementById("rightRacket");
+      rightRacket.style.width = "10px";
+      rightRacket.style.height = "80px";
+      rightRacket.style.background = "blue";
+      rightRacket.style.position = "absolute";
+      rightRacket.style.top = "110px";
+      rightRacket.style.left = "490px";
+
+      const ball = document.getElementById("ball");
+      ball.style.borderRadius = "50%";
+      ball.style.height = "36px";
+      ball.style.width = "36px";
+      ball.style.background = "red";
+      ball.style.position = "absolute";
+      ball.style.top = "132px";
+      ball.style.left = "232px";
+
+      // Координаты мяча
+      let ballH = {
+        posX: 232,
+        posY: 132,
+        speedX: 7,
+        speedY: 7,
+        width: 36,
+        height: 36,
+
+        update: function () {
+          ball.style.top = Math.round(this.posY) + "px";
+          ball.style.left = Math.round(this.posX) + "px";
+        },
+      };
+
+      // Координаты поля
+      let fieldH = {
+        width: 500,
+        height: 300,
+      };
+
+      // Координаты левой ракетки
+      let leftRacketH = {
+        posX: 0,
+        posY: 110,
+        //   speedX: 7,
+        speedY: 0,
+        width: 10,
+        height: 80,
+        update: function () {
+          leftRacket.style.top = Math.round(this.posY) + "px";
+          leftRacket.style.left = Math.round(this.posX) + "px";
+        },
+      };
+
+      // Координаты правой ракетки
+      let rightRacketH = {
+        posX: 490,
+        posY: 110,
+        //   speedX: 7,
+        speedY: 0,
+        width: 10,
+        height: 80,
+        update: function () {
+          rightRacket.style.top = Math.round(this.posY) + "px";
+          rightRacket.style.left = Math.round(this.posX) + "px";
+        },
+      };
+
+      // Реализация запуска игры
+      function start() {
+        setInterval(tick, 10);
+      }
+
+      function tick() {
+        // движение мячика
+        ballH.posX += ballH.speedX;
+
+        if (ballH.posX + ballH.width > fieldH.width) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = fieldH.width - ballH.width;
+        }
+        if (ballH.posX < 0) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = 0;
+        }
+
+        ballH.posY += ballH.speedY;
+
+        if (ballH.posY + ballH.height > fieldH.height) {
+          ballH.speedY = -ballH.speedY;
+          ballH.posY = fieldH.height - ballH.height;
+        }
+        if (ballH.posY < 0) {
+          ballH.speedY = -ballH.speedY;
+          ballH.posY = 0;
+        }
+
+        ballH.update();
+
+        //движение ракеток
+        document.addEventListener("keydown", keyDown);
+        document.addEventListener("keyup", keyUp);
+        function keyDown(e) {
+          leftRacketH.speedY = 1;
+          //  rightRacketH.speedY = 1;
+        }
+        function keyUp(e) {
+          leftRacketH.speedY = 0;
+          //  rightRacketH.speedY = 0;
+        }
+
+
+        //   switch (e.key) {
+        //     case "Shift":
+        //       leftRacketH.posY += leftRacketH.speedY;
+        //       if (leftRacketH.posY + leftRacketH.height > fieldH.height) {
+        //         leftRacketH.speedY = -leftRacketH.speedY;
+        //         leftRacketH.posY = fieldH.height - leftRacketH.height;
+        //       }
+        //       if (leftRacketH.posY < 0) {
+        //         leftRacketH.speedY = -leftRacketH.speedY;
+        //         leftRacketH.posY = 0;
+        //       }
+        //       leftRacketH.update();
+        //       break;
+        //     // case "Control":
+        //     //   break;
+        //     // case "ArrowUp":
+        //     // leftRacketH.posY += leftRacketH.speedY;
+        //     //   break;
+        //     // case "ArrowDown":
+        //     //   break;
+        //   }
+      }
+    </script>
+  </body>
+</html>
