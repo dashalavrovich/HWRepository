@@ -7,10 +7,7 @@
     <title>racket</title>
   </head>
   <body>
-    <div id="score">
-      <span id="scoreLeft"></span> -
-      <span id="scoreRight"></span>
-    </div>
+    <div id="score"></div>
     <div id="field">
       <div id="leftRacket"></div>
       <div id="ball"></div>
@@ -110,6 +107,11 @@
         height: 300,
       };
 
+      let scoreLeftCount = 0;
+      let scoreRightCount = 0;
+      let score = document.getElementById("score");
+      score.textContent = "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
+
       let isControlPress = false;
       let isShiftPress = false;
 
@@ -195,7 +197,6 @@
         if (ballH.posX + ballH.width > fieldH.width) {
           ballH.speedX = -ballH.speedX;
           ballH.posX = fieldH.width - ballH.width;
-          //  if(){}
         }
         // Левая стенка
         if (ballH.posX < 0) {
@@ -217,21 +218,41 @@
           ballH.posY = 0;
         }
 
-        ballH.update();
+        
 
-        let scoreLeftCount = 0;
-        let scoreRightCount = 0;
-        let scoreLeft = document.getElementById("scoreLeft");
-        let scoreRight = document.getElementById("scoreRight");
+        //   let scoreLeft = document.getElementById("scoreLeft");
+        //   let scoreRight = document.getElementById("scoreRight");
+        //   scoreLeft.innerHTML = scoreLeftCount;
+        //   scoreRight.textContent = "0";
 
-		  // ========= Гол =========
+        // ========= Гол =========
         if (ballH.posX + ballH.width == fieldH.width) {
           scoreLeftCount++;
-          scoreLeft.textContent = scoreLeftCount;
+			 updateScore()
+          ballH.posX = fieldH.width - ballH.width;
+			 ballH.speedX=0;
+			 ballH.speedY=0;
+
         } else if (ballH.posX == 0) {
           scoreRightCount++;
-          scoreRight.textContent = scoreRightCount;
+			 updateScore()
+          ballH.posX = 0;
+			 ballH.speedX=0;
+			 ballH.speedY=0;
         }
+
+		  function updateScore(){
+			score.textContent =
+            "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
+		  }
+
+		  ballH.update();
+
+        //   function reset() {
+        //     ballH.posX = 232;
+        //     ballH.posY = 132;
+        // 	 ballH.update();
+        //   }
       }
     </script>
   </body>
