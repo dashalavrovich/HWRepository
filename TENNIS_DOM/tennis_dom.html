@@ -13,9 +13,11 @@
       <div id="ball"></div>
       <div id="rightRacket"></div>
     </div>
-    <input type="button" value="Старт!" onclick="start()" id="butStart" />
+    <input type="button" value="Старт!" id="butStart" />
+    <!--onclick="start()"-->
     <script>
       //style
+
       document.body.style.background = "grey";
       const butStart = document.getElementById("butStart");
       butStart.style.display = "block";
@@ -25,6 +27,8 @@
       butStart.style.padding = "10px 30px";
       butStart.style.background = "orange";
       butStart.style.border = "2px solid black";
+
+      butStart.addEventListener("click", start);
 
       const field = document.getElementById("field");
       field.style.width = "500px";
@@ -192,7 +196,6 @@
         // Вертикальные стенки
         ballH.posX += ballH.speedX;
 
-        let differ = fieldH.width - rightRacketH.width;
         // Правая стенка
         if (ballH.posX + ballH.width > fieldH.width) {
           ballH.speedX = -ballH.speedX;
@@ -207,46 +210,81 @@
         // Горизонтальные стенки
         ballH.posY += ballH.speedY;
 
-        //Нижняя стенка
+        // Нижняя стенка
         if (ballH.posY + ballH.height > fieldH.height) {
           ballH.speedY = -ballH.speedY;
           ballH.posY = fieldH.height - ballH.height;
         }
-        //Верхняя стенка
+        // Верхняя стенка
         if (ballH.posY < 0) {
           ballH.speedY = -ballH.speedY;
           ballH.posY = 0;
         }
 
-        
+        // Левая ракетка отбивает мяч
 
-        //   let scoreLeft = document.getElementById("scoreLeft");
-        //   let scoreRight = document.getElementById("scoreRight");
-        //   scoreLeft.innerHTML = scoreLeftCount;
-        //   scoreRight.textContent = "0";
+        let ballNewX = ballH.posX;
+        let ballNewY = ballH.posY + ballH.height / 2;
 
-        // ========= Гол =========
-        if (ballH.posX + ballH.width == fieldH.width) {
-          scoreLeftCount++;
-			 updateScore()
-          ballH.posX = fieldH.width - ballH.width;
-			 ballH.speedX=0;
-			 ballH.speedY=0;
+        let lRackNewX = leftRacketH.posX + leftRacketH.width;
+        let lRackNewY_1 = leftRacketH.posY;
+        let lRackNewY_2 = leftRacketH.posY + leftRacketH.height;
 
-        } else if (ballH.posX == 0) {
-          scoreRightCount++;
-			 updateScore()
-          ballH.posX = 0;
-			 ballH.speedX=0;
-			 ballH.speedY=0;
+        if (
+          ballNewX <= lRackNewX &&
+          ballNewY >= lRackNewY_1 &&
+          ballNewY <= lRackNewY_2
+        ) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = lRackNewX;
         }
 
-		  function updateScore(){
-			score.textContent =
-            "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
-		  }
+        // Правая ракетка отбивает мяч
 
-		  ballH.update();
+        let ballNewX_2 = ballH.posX + ballH.width;
+        let ballNewY_2 = ballH.posY + ballH.height / 2;
+
+        let rRackNewX = rightRacketH.posX;
+        let rRackNewY_1 = rightRacketH.posY;
+        let rRackNewY_2 = rightRacketH.posY + rightRacketH.height;
+
+        let rightBallRacketX = fieldH.width - rightRacketH.width - ballH.width;
+
+        if (
+          ballNewX_2 >= rRackNewX &&
+          ballNewY_2 >= rRackNewY_1 &&
+          ballNewY_2 <= rRackNewY_2
+        ) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = rightBallRacketX;
+        }
+
+        // ========= Гол =========
+        // Правая стенка
+        if (ballH.posX + ballH.width == fieldH.width) {
+          scoreLeftCount++;
+          updateScore();
+          ballH.posX = fieldH.width - ballH.width - 0.1;
+          ballH.speedX = 0;
+          ballH.speedY = 0;
+          butStart.addEventListener("click", start);
+        }
+
+        // Левая стенка
+        if (ballH.posX == 0) {
+          scoreRightCount++;
+          updateScore();
+          ballH.posX = 0.1;
+          ballH.speedX = 0;
+          ballH.speedY = 0;
+        }
+
+        function updateScore() {
+          score.textContent =
+            "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
+        }
+
+        ballH.update();
 
         //   function reset() {
         //     ballH.posX = 232;
