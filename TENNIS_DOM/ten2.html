@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>racket</title>
+  </head>
+  <body>
+    <div id="score"></div>
+    <div id="field">
+      <div id="leftRacket"></div>
+      <div id="ball"></div>
+      <div id="rightRacket"></div>
+    </div>
+    <input type="button" value="Старт!" id="butStart" />
+    <!--onclick="start()"-->
+    <script>
+      //style
+
+      document.body.style.background = "grey";
+      const butStart = document.getElementById("butStart");
+      butStart.style.display = "block";
+      butStart.style.marginLeft = "auto";
+      butStart.style.marginRight = "auto";
+      butStart.style.marginTop = "60px";
+      butStart.style.padding = "10px 30px";
+      butStart.style.background = "orange";
+      butStart.style.border = "2px solid black";
+
+      const field = document.getElementById("field");
+      field.style.width = "500px";
+      field.style.height = "300px";
+      field.style.background = "yellow";
+      field.style.marginLeft = "auto";
+      field.style.marginRight = "auto";
+      field.style.marginTop = "100px";
+      field.style.position = "relative";
+      field.style.border = "2px solid black";
+
+      const ball = document.getElementById("ball");
+      ball.style.borderRadius = "50%";
+      ball.style.height = "36px";
+      ball.style.width = "36px";
+      ball.style.background = "red";
+      ball.style.position = "absolute";
+      ball.style.top = "132px";
+      ball.style.left = "232px";
+
+      const leftRacket = document.getElementById("leftRacket");
+      leftRacket.style.width = "10px";
+      leftRacket.style.height = "80px";
+      leftRacket.style.background = "green";
+      leftRacket.style.position = "absolute";
+      leftRacket.style.top = "110px";
+
+      const rightRacket = document.getElementById("rightRacket");
+      rightRacket.style.width = "10px";
+      rightRacket.style.height = "80px";
+      rightRacket.style.background = "blue";
+      rightRacket.style.position = "absolute";
+      rightRacket.style.top = "110px";
+      rightRacket.style.left = "490px";
+
+      let gameState = 0;
+      // 0 - игра не начата
+      // 1 - мяч летает
+      // 2 - гол зафиксирован, мяч застыл
+
+      if (gameState === 0) {
+        butStart.addEventListener("click", start);
+      }
+
+      // Координаты левой ракетки
+      let leftRacketH = {
+        posX: 0,
+        posY: 110,
+        speedY: 0,
+        width: 10,
+        height: 80,
+        update: function () {
+          leftRacket.style.top = Math.round(this.posY) + "px";
+          leftRacket.style.left = Math.round(this.posX) + "px";
+        },
+      };
+
+      // Координаты правой ракетки
+      let rightRacketH = {
+        posX: 490,
+        posY: 110,
+        speedY: 0,
+        width: 10,
+        height: 80,
+        update: function () {
+          rightRacket.style.top = Math.round(this.posY) + "px";
+          rightRacket.style.left = Math.round(this.posX) + "px";
+        },
+      };
+
+      // Координаты мяча
+      let ballH = {
+        posX: 232,
+        posY: 132,
+        speedX: 7,
+        speedY: 7,
+        width: 36,
+        height: 36,
+
+        update: function () {
+          ball.style.top = Math.round(this.posY) + "px";
+          ball.style.left = Math.round(this.posX) + "px";
+        },
+      };
+
+      // Координаты поля
+      let fieldH = {
+        width: 500,
+        height: 300,
+      };
+
+      let scoreLeftCount = 0;
+      let scoreRightCount = 0;
+      let score = document.getElementById("score");
+      score.textContent = "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
+
+      let isControlPress = false;
+      let isShiftPress = false;
+
+      let isArrowDownPress = false;
+      let isArrowUpPress = false;
+
+      function start() {
+        setInterval(tick, 30);
+        gameState = 1;
+        document.addEventListener("keydown", keyDown);
+        document.addEventListener("keyup", keyUp);
+      }
+
+      function keyDown(e) {
+        if (e.key === "Control" && gameState === 1) {
+          isControlPress = true;
+          leftRacketH.speedY = 3;
+        } else if (e.key === "Shift" && gameState === 1) {
+          isShiftPress = true;
+          leftRacketH.speedY = -3;
+        } else if (e.key === "ArrowDown" && gameState === 1) {
+          isArrowDownPress = true;
+          rightRacketH.speedY = 3;
+        } else if (e.key === "ArrowUp" && gameState === 1) {
+          isArrowUpPress = true;
+          rightRacketH.speedY = -3;
+        }
+      }
+
+      function keyUp(e) {
+        if (e.key === "Control") {
+          isControlPress = false;
+          leftRacketH.speedY = 0;
+        } else if (e.key === "Shift") {
+          isShiftPress = false;
+          leftRacketH.speedY = 0;
+        } else if (e.key === "ArrowDown") {
+          isArrowDownPress = false;
+          rightRacketH.speedY = 0;
+        } else if (e.key === "ArrowUp") {
+          isArrowUpPress = false;
+          rightRacketH.speedY = 0;
+        }
+      }
+      function tick() {
+        // =========== Движение ракеток  ===========
+        // ControlPress and ShiftPress
+        if (isControlPress) {
+          leftRacketH.posY += leftRacketH.speedY;
+          if (leftRacketH.posY + leftRacketH.height > fieldH.height) {
+            leftRacketH.posY = fieldH.height - leftRacketH.height;
+          }
+        }
+        if (isShiftPress) {
+          leftRacketH.posY += leftRacketH.speedY;
+          if (leftRacketH.posY < 0) {
+            leftRacketH.posY = 0;
+          }
+        }
+
+        // ArrowDownPress and ArrowUpPress
+        if (isArrowDownPress) {
+          rightRacketH.posY += rightRacketH.speedY;
+          if (rightRacketH.posY + rightRacketH.height > fieldH.height) {
+            rightRacketH.posY = fieldH.height - rightRacketH.height;
+          }
+        }
+        if (isArrowUpPress) {
+          rightRacketH.posY += rightRacketH.speedY;
+          if (rightRacketH.posY < 0) {
+            rightRacketH.posY = 0;
+          }
+        }
+
+        leftRacketH.update();
+        rightRacketH.update();
+
+        // =========== Движение мячика ===========
+        // Вертикальные стенки
+        ballH.posX += ballH.speedX;
+
+        // Правая стенка
+        if (ballH.posX + ballH.width > fieldH.width) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = fieldH.width - ballH.width;
+        }
+        // Левая стенка
+        if (ballH.posX < 0) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = 0;
+        }
+
+        // Горизонтальные стенки
+        ballH.posY += ballH.speedY;
+
+        // Нижняя стенка
+        if (ballH.posY + ballH.height > fieldH.height) {
+          ballH.speedY = -ballH.speedY;
+          ballH.posY = fieldH.height - ballH.height;
+        }
+        // Верхняя стенка
+        if (ballH.posY < 0) {
+          ballH.speedY = -ballH.speedY;
+          ballH.posY = 0;
+        }
+
+        // Левая ракетка отбивает мяч
+
+        let ballNewX = ballH.posX;
+        let ballNewY = ballH.posY + ballH.height / 2;
+
+        let lRackNewX = leftRacketH.posX + leftRacketH.width;
+        let lRackNewY_1 = leftRacketH.posY;
+        let lRackNewY_2 = leftRacketH.posY + leftRacketH.height;
+
+        if (
+          ballNewX <= lRackNewX &&
+          ballNewY >= lRackNewY_1 &&
+          ballNewY <= lRackNewY_2
+        ) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = lRackNewX;
+        }
+
+        // Правая ракетка отбивает мяч
+
+        let ballNewX_2 = ballH.posX + ballH.width;
+        let ballNewY_2 = ballH.posY + ballH.height / 2;
+
+        let rRackNewX = rightRacketH.posX;
+        let rRackNewY_1 = rightRacketH.posY;
+        let rRackNewY_2 = rightRacketH.posY + rightRacketH.height;
+
+        let rightBallRacketX = fieldH.width - rightRacketH.width - ballH.width;
+
+        if (
+          ballNewX_2 >= rRackNewX &&
+          ballNewY_2 >= rRackNewY_1 &&
+          ballNewY_2 <= rRackNewY_2
+        ) {
+          ballH.speedX = -ballH.speedX;
+          ballH.posX = rightBallRacketX;
+        }
+
+        // ========= Гол =========
+        // Правая стенка
+        if (ballH.posX + ballH.width == fieldH.width && gameState === 1) {
+          scoreLeftCount++;
+          updateScore();
+          ballH.posX = fieldH.width - ballH.width - 0.1;
+          ballH.speedX = 0;
+          ballH.speedY = 0;
+          gameState = 2;
+        }
+
+        // Левая стенка
+        if (ballH.posX == 0 && gameState === 1) {
+          scoreRightCount++;
+          updateScore();
+          ballH.posX = 0.1;
+          ballH.speedX = 0;
+          ballH.speedY = 0;
+          gameState = 2;
+        }
+
+        function updateScore() {
+          score.textContent =
+            "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
+        }
+
+        if (gameState === 2) {
+          ballH.posX = 232;
+          ballH.posY = 132;
+        }
+
+        ballH.update();
+      }
+    </script>
+  </body>
+</html>
