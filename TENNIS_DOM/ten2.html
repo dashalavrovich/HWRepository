@@ -13,8 +13,7 @@
       <div id="ball"></div>
       <div id="rightRacket"></div>
     </div>
-    <input type="button" value="Старт!" id="butStart" />
-    <!--onclick="start()"-->
+    <input type="button" value="Старт!" id="butStart" style="cursor: pointer" />
     <script>
       //style
 
@@ -27,6 +26,8 @@
       butStart.style.padding = "10px 30px";
       butStart.style.background = "orange";
       butStart.style.border = "2px solid black";
+
+      butStart.addEventListener("click", start);
 
       const field = document.getElementById("field");
       field.style.width = "500px";
@@ -61,15 +62,6 @@
       rightRacket.style.position = "absolute";
       rightRacket.style.top = "110px";
       rightRacket.style.left = "490px";
-
-      let gameState = 0;
-      // 0 - игра не начата
-      // 1 - мяч летает
-      // 2 - гол зафиксирован, мяч застыл
-
-      if (gameState === 0) {
-        butStart.addEventListener("click", start);
-      }
 
       // Координаты левой ракетки
       let leftRacketH = {
@@ -123,17 +115,28 @@
       let score = document.getElementById("score");
       score.textContent = "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
 
+      // кнопки Control, Shift, ArrowDown, ArrowUp не нажаты
       let isControlPress = false;
       let isShiftPress = false;
 
       let isArrowDownPress = false;
       let isArrowUpPress = false;
 
+      let gameState = 0;
+      // 0 - игра не начата
+      // 1 - мяч летает
+      // 2 - гол зафиксирован, мяч застыл
+
+      setInterval(tick, 30);
+      document.addEventListener("keydown", keyDown);
+      document.addEventListener("keyup", keyUp);
+
       function start() {
-        setInterval(tick, 30);
         gameState = 1;
-        document.addEventListener("keydown", keyDown);
-        document.addEventListener("keyup", keyUp);
+        ballH.posX = 232;
+        ballH.posY = 132;
+        ballH.speedX = 7;
+        ballH.speedY = 7;
       }
 
       function keyDown(e) {
@@ -167,6 +170,7 @@
           rightRacketH.speedY = 0;
         }
       }
+
       function tick() {
         // =========== Движение ракеток  ===========
         // ControlPress and ShiftPress
@@ -202,102 +206,104 @@
 
         // =========== Движение мячика ===========
         // Вертикальные стенки
-        ballH.posX += ballH.speedX;
+        if (gameState === 1) {
+          ballH.posX += ballH.speedX;
 
-        // Правая стенка
-        if (ballH.posX + ballH.width > fieldH.width) {
-          ballH.speedX = -ballH.speedX;
-          ballH.posX = fieldH.width - ballH.width;
+          // Правая стенка
+          if (ballH.posX + ballH.width > fieldH.width) {
+            ballH.speedX = -ballH.speedX;
+            ballH.posX = fieldH.width - ballH.width;
+          }
+          // Левая стенка
+          if (ballH.posX < 0) {
+            ballH.speedX = -ballH.speedX;
+            ballH.posX = 0;
+          }
+
+          // Горизонтальные стенки
+          ballH.posY += ballH.speedY;
+
+          // Нижняя стенка
+          if (ballH.posY + ballH.height > fieldH.height) {
+            ballH.speedY = -ballH.speedY;
+            ballH.posY = fieldH.height - ballH.height;
+          }
+          // Верхняя стенка
+          if (ballH.posY < 0) {
+            ballH.speedY = -ballH.speedY;
+            ballH.posY = 0;
+          }
+
+          // Левая ракетка отбивает мяч
+
+          let ballNewX = ballH.posX;
+          let ballNewY = ballH.posY + ballH.height / 2;
+
+          let lRackNewX = leftRacketH.posX + leftRacketH.width;
+          let lRackNewY_1 = leftRacketH.posY;
+          let lRackNewY_2 = leftRacketH.posY + leftRacketH.height;
+
+          if (
+            ballNewX <= lRackNewX &&
+            ballNewY >= lRackNewY_1 &&
+            ballNewY <= lRackNewY_2
+          ) {
+            ballH.speedX = -ballH.speedX;
+            ballH.posX = lRackNewX;
+          }
+
+          // Правая ракетка отбивает мяч
+
+          let ballNewX_2 = ballH.posX + ballH.width;
+          let ballNewY_2 = ballH.posY + ballH.height / 2;
+
+          let rRackNewX = rightRacketH.posX;
+          let rRackNewY_1 = rightRacketH.posY;
+          let rRackNewY_2 = rightRacketH.posY + rightRacketH.height;
+
+          let rightBallRacketX =
+            fieldH.width - rightRacketH.width - ballH.width;
+
+          if (
+            ballNewX_2 >= rRackNewX &&
+            ballNewY_2 >= rRackNewY_1 &&
+            ballNewY_2 <= rRackNewY_2
+          ) {
+            ballH.speedX = -ballH.speedX;
+            ballH.posX = rightBallRacketX;
+          }
+
+          // ========= Гол =========
+          // Правая стенка
+          if (ballH.posX + ballH.width == fieldH.width && gameState === 1) {
+            scoreLeftCount++;
+            updateScore();
+            ballH.posX = fieldH.width - ballH.width - 0.1;
+            ballH.speedX = 0;
+            ballH.speedY = 0;
+            gameState = 2;
+          }
+
+          // Левая стенка
+          if (ballH.posX == 0 && gameState === 1) {
+            scoreRightCount++;
+            updateScore();
+            ballH.posX = 0.1;
+            ballH.speedX = 0;
+            ballH.speedY = 0;
+            gameState = 2;
+          }
+
+          function updateScore() {
+            score.textContent =
+              "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
+          }
+
+          // if (gameState === 2) {
+          //   ballH.posX = 232;
+          //   ballH.posY = 132;
+          // }
         }
-        // Левая стенка
-        if (ballH.posX < 0) {
-          ballH.speedX = -ballH.speedX;
-          ballH.posX = 0;
-        }
-
-        // Горизонтальные стенки
-        ballH.posY += ballH.speedY;
-
-        // Нижняя стенка
-        if (ballH.posY + ballH.height > fieldH.height) {
-          ballH.speedY = -ballH.speedY;
-          ballH.posY = fieldH.height - ballH.height;
-        }
-        // Верхняя стенка
-        if (ballH.posY < 0) {
-          ballH.speedY = -ballH.speedY;
-          ballH.posY = 0;
-        }
-
-        // Левая ракетка отбивает мяч
-
-        let ballNewX = ballH.posX;
-        let ballNewY = ballH.posY + ballH.height / 2;
-
-        let lRackNewX = leftRacketH.posX + leftRacketH.width;
-        let lRackNewY_1 = leftRacketH.posY;
-        let lRackNewY_2 = leftRacketH.posY + leftRacketH.height;
-
-        if (
-          ballNewX <= lRackNewX &&
-          ballNewY >= lRackNewY_1 &&
-          ballNewY <= lRackNewY_2
-        ) {
-          ballH.speedX = -ballH.speedX;
-          ballH.posX = lRackNewX;
-        }
-
-        // Правая ракетка отбивает мяч
-
-        let ballNewX_2 = ballH.posX + ballH.width;
-        let ballNewY_2 = ballH.posY + ballH.height / 2;
-
-        let rRackNewX = rightRacketH.posX;
-        let rRackNewY_1 = rightRacketH.posY;
-        let rRackNewY_2 = rightRacketH.posY + rightRacketH.height;
-
-        let rightBallRacketX = fieldH.width - rightRacketH.width - ballH.width;
-
-        if (
-          ballNewX_2 >= rRackNewX &&
-          ballNewY_2 >= rRackNewY_1 &&
-          ballNewY_2 <= rRackNewY_2
-        ) {
-          ballH.speedX = -ballH.speedX;
-          ballH.posX = rightBallRacketX;
-        }
-
-        // ========= Гол =========
-        // Правая стенка
-        if (ballH.posX + ballH.width == fieldH.width && gameState === 1) {
-          scoreLeftCount++;
-          updateScore();
-          ballH.posX = fieldH.width - ballH.width - 0.1;
-          ballH.speedX = 0;
-          ballH.speedY = 0;
-          gameState = 2;
-        }
-
-        // Левая стенка
-        if (ballH.posX == 0 && gameState === 1) {
-          scoreRightCount++;
-          updateScore();
-          ballH.posX = 0.1;
-          ballH.speedX = 0;
-          ballH.speedY = 0;
-          gameState = 2;
-        }
-
-        function updateScore() {
-          score.textContent =
-            "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
-        }
-
-        if (gameState === 2) {
-          ballH.posX = 232;
-          ballH.posY = 132;
-        }
-
         ballH.update();
       }
     </script>
