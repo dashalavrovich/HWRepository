@@ -13,7 +13,7 @@
       <div id="ball"></div>
       <div id="rightRacket"></div>
     </div>
-    <input type="button" value="Старт!" id="butStart" style="cursor: pointer" />
+    <input type="button" value="Старт!" id="butStart" />
     <script>
       //style
 
@@ -26,6 +26,7 @@
       butStart.style.padding = "10px 30px";
       butStart.style.background = "orange";
       butStart.style.border = "2px solid black";
+      butStart.style.cursor = "pointer";
 
       butStart.addEventListener("click", start);
 
@@ -35,7 +36,7 @@
       field.style.background = "yellow";
       field.style.marginLeft = "auto";
       field.style.marginRight = "auto";
-      field.style.marginTop = "100px";
+      field.style.marginTop = "50px";
       field.style.position = "relative";
       field.style.border = "2px solid black";
 
@@ -113,6 +114,11 @@
       let scoreLeftCount = 0;
       let scoreRightCount = 0;
       let score = document.getElementById("score");
+
+      score.style.textAlign = "center";
+      score.style.marginTop = "50px";
+      score.style.fontSize = "30px";
+
       score.textContent = "Счёт: " + scoreLeftCount + " - " + scoreRightCount;
 
       // кнопки Control, Shift, ArrowDown, ArrowUp не нажаты
