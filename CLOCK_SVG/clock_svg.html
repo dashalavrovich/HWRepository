@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock_SVG</title>
+  </head>
+  <body>
+    <div id="block1">
+      <label for="num">Введите число</label>
+      <input type="text" id="num" />
+      <input type="button" id="butNum" value="Отправить" />
+    </div>
+    <svg id="svgElem" xmlns="http://www.w3.org/2000/svg"></svg>
+    <script>
+      const butNum = document.getElementById("butNum");
+
+      //event handler
+      butNum.onclick = function () {
+        textNum = document.getElementById("num");
+        textNumValue = Number(textNum.value);
+        buildClock(textNumValue);
+      };
+
+      // clock is hidden
+      const svgElem = document.getElementById("svgElem");
+      svgElem.style.display = "none";
+
+      // screen size
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+
+      // coordinates of the clock face center
+      const centrScreenX = screenWidth / 2;
+      const centrScreenY = screenHeight / 2;
+
+      // build svg Clock
+      function buildClock(number) {
+        const block1 = document.getElementById("block1");
+        block1.style.display = "none";
+        svgElem.style.display = "block";
+        svgElem.style.width = screenWidth - 17 + "px";
+        svgElem.style.height = screenHeight - 17 + "px";
+        svgElem.style.border = "1px solid black";
+
+        // face clock
+        const svgns = "http://www.w3.org/2000/svg";
+        const clock = document.createElementNS(svgns, "circle");
+        svgElem.appendChild(clock);
+        clock.setAttribute("cx", number + "px");
+        clock.setAttribute("cy", number + "px");
+        clock.setAttribute("r", number + "px");
+        clock.setAttribute("fill", "red");
+        clock.setAttribute("stroke", "black");
+
+        // second hand
+        const secElem = document.createElementNS(svgns, "line");
+        svgElem.appendChild(secElem);
+        secElem.setAttribute("x1", number);
+        secElem.setAttribute("y1", number/2);
+        secElem.setAttribute("x2", number);
+        secElem.setAttribute("y2", number);
+        secElem.setAttribute("stroke", "black");
+        secElem.setAttribute("stroke-width", "2");
+        secElem.setAttribute("transform-origin", `${number} ${number}`);
+
+        // minute hand
+        const minElem = document.createElementNS(svgns, "line");
+        svgElem.appendChild(minElem);
+        minElem.setAttribute("x1", number);
+        minElem.setAttribute("y1", number-number/2.4);
+        minElem.setAttribute("x2", number);
+        minElem.setAttribute("y2", number);
+        minElem.setAttribute("stroke", "black");
+        minElem.setAttribute("stroke-width", number/50);
+        minElem.setAttribute("transform-origin", `${number} ${number}`);
+
+        // hour hand
+        const hourElem = document.createElementNS(svgns, "line");
+        svgElem.appendChild(hourElem);
+        hourElem.setAttribute("x1", number);
+        hourElem.setAttribute("y1", number-number/3);
+        hourElem.setAttribute("x2", number);
+        hourElem.setAttribute("y2", number);
+        hourElem.setAttribute("stroke", "black");
+        hourElem.setAttribute("stroke-width", number/30);
+        hourElem.setAttribute("transform-origin", `${number} ${number}`);
+
+        const numbersDistance = number * 0.8;
+
+        for (let h = 1; h <= 12; h++) {
+          const angle = (((360 / 12) * h) / 180) * Math.PI;
+          const numberX = number + Math.sin(angle) * numbersDistance;
+          const numberY = number - Math.cos(angle) * numbersDistance;
+
+          // orange circles
+          const numberElem = document.createElementNS(svgns, "circle");
+          svgElem.appendChild(numberElem);
+          numberElem.setAttribute("cx", numberX);
+          numberElem.setAttribute("cy", numberY);
+          numberElem.setAttribute("r", number * 0.12);
+          numberElem.setAttribute("fill", "orange");
+          numberElem.setAttribute("stroke", "black");
+
+          // numbers in orange circles
+          const textElem = document.createElementNS(svgns, "text");
+          svgElem.appendChild(textElem);
+          textElem.textContent=h;
+          textElem.setAttribute("x", numberX - number / 70);
+          textElem.setAttribute("y", numberY + number / 70);
+          textElem.setAttribute("font-size",  number / 20);
+        }
+
+        // time in the form of text
+        const timeText = document.createElementNS(svgns, "text");
+        svgElem.appendChild(timeText);
+        timeText.setAttribute("x", number/1.2);
+        timeText.setAttribute("y", number/2);
+        timeText.setAttribute("font-size", number/10);
+
+        // russian time formatting
+        function formatDateTime(dt) {
+          const hours = dt.getHours();
+          const minutes = dt.getMinutes();
+          const seconds = dt.getSeconds();
+          return (
+            str0l(hours, 2) + ":" + str0l(minutes, 2) + ":" + str0l(seconds, 2)
+          );
+        }
+        function str0l(val, len) {
+          let strVal = val.toString();
+          while (strVal.length < len) strVal = "0" + strVal;
+          return strVal;
+        }
+
+        // movement of the arrows
+        function pos() {
+          const time = new Date();
+
+          const secAngle = (360 / 60) * time.getSeconds();
+
+          secElem.setAttribute("transform", `rotate(${secAngle},0,0)`);
+
+          const minAngle = (360 / 60) * time.getMinutes();
+
+          minElem.setAttribute("transform", `rotate(${minAngle},0,0)`);
+
+          const hourAngle =
+            (360 / 12) * (time.getHours() + time.getMinutes() / 60);
+
+          hourElem.setAttribute("transform", `rotate(${hourAngle},0,0)`);
+
+          timeText.textContent=formatDateTime(time)
+
+          setTimeout(pos, 1010 - time.getMilliseconds());
+        }
+        pos();
+      }
+    </script>
+  </body>
+</html>
