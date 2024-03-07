@@ -31,17 +31,13 @@
       const screenWidth = window.innerWidth;
       const screenHeight = window.innerHeight;
 
-      // coordinates of the clock face center
-      const centrScreenX = screenWidth / 2;
-      const centrScreenY = screenHeight / 2;
-
       // build svg Clock
       function buildClock(number) {
         const block1 = document.getElementById("block1");
         block1.style.display = "none";
         svgElem.style.display = "block";
-        svgElem.style.width = screenWidth - 17 + "px";
-        svgElem.style.height = screenHeight - 17 + "px";
+        svgElem.style.width = number * 2 + "px";
+        svgElem.style.height = number * 2 + "px";
         svgElem.style.border = "1px solid black";
 
         // face clock
@@ -58,7 +54,7 @@
         const secElem = document.createElementNS(svgns, "line");
         svgElem.appendChild(secElem);
         secElem.setAttribute("x1", number);
-        secElem.setAttribute("y1", number/2);
+        secElem.setAttribute("y1", number / 2);
         secElem.setAttribute("x2", number);
         secElem.setAttribute("y2", number);
         secElem.setAttribute("stroke", "black");
@@ -69,22 +65,22 @@
         const minElem = document.createElementNS(svgns, "line");
         svgElem.appendChild(minElem);
         minElem.setAttribute("x1", number);
-        minElem.setAttribute("y1", number-number/2.4);
+        minElem.setAttribute("y1", number - number / 2.4);
         minElem.setAttribute("x2", number);
         minElem.setAttribute("y2", number);
         minElem.setAttribute("stroke", "black");
-        minElem.setAttribute("stroke-width", number/50);
+        minElem.setAttribute("stroke-width", number / 50);
         minElem.setAttribute("transform-origin", `${number} ${number}`);
 
         // hour hand
         const hourElem = document.createElementNS(svgns, "line");
         svgElem.appendChild(hourElem);
         hourElem.setAttribute("x1", number);
-        hourElem.setAttribute("y1", number-number/3);
+        hourElem.setAttribute("y1", number - number / 3);
         hourElem.setAttribute("x2", number);
         hourElem.setAttribute("y2", number);
         hourElem.setAttribute("stroke", "black");
-        hourElem.setAttribute("stroke-width", number/30);
+        hourElem.setAttribute("stroke-width", number / 30);
         hourElem.setAttribute("transform-origin", `${number} ${number}`);
 
         const numbersDistance = number * 0.8;
@@ -106,18 +102,18 @@
           // numbers in orange circles
           const textElem = document.createElementNS(svgns, "text");
           svgElem.appendChild(textElem);
-          textElem.textContent=h;
+          textElem.textContent = h;
           textElem.setAttribute("x", numberX - number / 70);
           textElem.setAttribute("y", numberY + number / 70);
-          textElem.setAttribute("font-size",  number / 20);
+          textElem.setAttribute("font-size", number / 20);
         }
 
         // time in the form of text
         const timeText = document.createElementNS(svgns, "text");
         svgElem.appendChild(timeText);
-        timeText.setAttribute("x", number/1.2);
-        timeText.setAttribute("y", number/2);
-        timeText.setAttribute("font-size", number/10);
+        timeText.setAttribute("x", number / 1.2);
+        timeText.setAttribute("y", number / 2);
+        timeText.setAttribute("font-size", number / 10);
 
         // russian time formatting
         function formatDateTime(dt) {
@@ -151,7 +147,7 @@
 
           hourElem.setAttribute("transform", `rotate(${hourAngle},0,0)`);
 
-          timeText.textContent=formatDateTime(time)
+          timeText.textContent = formatDateTime(time);
 
           setTimeout(pos, 1010 - time.getMilliseconds());
         }
