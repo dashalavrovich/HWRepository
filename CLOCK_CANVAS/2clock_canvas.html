@@ -7,28 +7,47 @@
     <title>Clock_Canvas</title>
   </head>
   <body>
+    <div id="block1">
+      <label for="num">Введите число</label>
+      <input type="text" id="num" />
+      <input type="button" id="butNum" value="Отправить" />
+    </div>
     <canvas id="cva"></canvas>
     <script>
       var cvs = document.getElementById("cva");
       var ctx = cvs.getContext("2d");
 
+		// clock is hidden
+      cvs.style.display = "none";
+
+      const butNum = document.getElementById("butNum");
+
+      //event handler
+      butNum.onclick = function () {
+        textNum = document.getElementById("num");
+        textNumValue = Number(textNum.value);
+        buildClock(textNumValue);
+      };
+
       function buildClock(number) {
-        // movement of the arrows
+        const block1 = document.getElementById("block1");
+        block1.style.display = "none";
+        cvs.style.display = "block";
+
         function pos() {
           ctx.clearRect(0, 0, cvs.width, cvs.height);
 
-          // clock
+          // dial
           cvs.setAttribute("height", number * 2);
           cvs.setAttribute("width", number * 2);
-          cvs.style.background = "lightyellow";
-
+          cvs.style.background = "yellow";
           ctx.beginPath();
           ctx.arc(number, number, number, 0, Math.PI * 2, false);
-          ctx.strokeStyle = "blue";
+          ctx.strokeStyle = "black";
           ctx.fillStyle = "red";
           ctx.lineWidth = 3;
-          ctx.stroke();
           ctx.fill();
+			 ctx.stroke();
 
           for (let h = 1; h <= 12; h++) {
             const angle = (((360 / 12) * h) / 180) * Math.PI;
@@ -76,12 +95,14 @@
 
           const time = new Date();
 
-			 // second hand - angle
-			 const secDistance=number * 0.6;
-          const secAngle =(360 / 60) *  time.getSeconds();
+          const degreesToRadians = (n) => (n / 180) * Math.PI;
 
-          const secX = number - Math.cos(secAngle) * secDistance;
-          const secY = number + Math.sin(secAngle) * secDistance;
+          // second hand - angle
+          const secDistance = number * 0.6;
+          const secAngle = degreesToRadians((360 / 60) * time.getSeconds());
+
+          const secX = number + Math.sin(secAngle) * secDistance;
+          const secY = number - Math.cos(secAngle) * secDistance;
 
           // second hand
           ctx.beginPath();
@@ -92,6 +113,41 @@
           ctx.lineCap = "round";
           ctx.stroke();
 
+          // minute hand - angle
+          const minDistance = number * 0.5;
+          const minAngle = degreesToRadians((360 / 60) * time.getMinutes());
+
+          const minX = number + Math.sin(minAngle) * minDistance;
+          const minY = number - Math.cos(minAngle) * minDistance;
+
+          // minute hand
+          ctx.beginPath();
+          ctx.moveTo(number, number);
+          ctx.lineTo(minX, minY);
+          ctx.strokeStyle = "black";
+          ctx.lineWidth = 8;
+          ctx.lineCap = "round";
+          ctx.stroke();
+
+          // hour hand - angle
+          const hourDistance = number * 0.4;
+          const hourAngle = degreesToRadians(
+            (360 / 12) * (time.getHours() + time.getMinutes() / 60)
+          );
+
+          const hourX = number + Math.sin(hourAngle) * hourDistance;
+          const hourY = number - Math.cos(hourAngle) * hourDistance;
+
+          // hour hand
+          ctx.beginPath();
+          ctx.moveTo(number, number);
+          ctx.lineTo(hourX, hourY);
+          ctx.strokeStyle = "black";
+          ctx.lineWidth = 10;
+          ctx.lineCap = "round";
+          ctx.stroke();
+
+          // digital watch
           ctx.fillText(formatDateTime(time), number, number / 2);
 
           setTimeout(pos, 1010 - time.getMilliseconds());
@@ -99,7 +155,6 @@
 
         pos();
       }
-      buildClock(300);
     </script>
   </body>
 </html>
