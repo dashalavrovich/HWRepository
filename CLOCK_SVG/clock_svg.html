@@ -60,7 +60,7 @@
         secElem.setAttribute("stroke", "black");
         secElem.setAttribute("stroke-width", "2");
         secElem.setAttribute("transform-origin", `${number} ${number}`);
-        secElem.setAttribute("stroke-linecap","round");
+        secElem.setAttribute("stroke-linecap", "round");
 
         // minute hand
         const minElem = document.createElementNS(svgns, "line");
@@ -72,7 +72,7 @@
         minElem.setAttribute("stroke", "black");
         minElem.setAttribute("stroke-width", number / 50);
         minElem.setAttribute("transform-origin", `${number} ${number}`);
-        minElem.setAttribute("stroke-linecap","round");
+        minElem.setAttribute("stroke-linecap", "round");
 
         // hour hand
         const hourElem = document.createElementNS(svgns, "line");
@@ -84,7 +84,7 @@
         hourElem.setAttribute("stroke", "black");
         hourElem.setAttribute("stroke-width", number / 30);
         hourElem.setAttribute("transform-origin", `${number} ${number}`);
-        hourElem.setAttribute("stroke-linecap","round");
+        hourElem.setAttribute("stroke-linecap", "round");
 
         const numbersDistance = number * 0.8;
 
@@ -106,7 +106,7 @@
           const textElem = document.createElementNS(svgns, "text");
           svgElem.appendChild(textElem);
           textElem.textContent = h;
-          textElem.setAttribute("x", numberX );
+          textElem.setAttribute("x", numberX);
           textElem.setAttribute("y", numberY + number / 70);
           textElem.setAttribute("font-size", number / 20);
           textElem.setAttribute("text-anchor", "middle");
