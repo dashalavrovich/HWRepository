@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Storage</title>
+  </head>
+  <body>
+    <input
+      type="button"
+      value="ввод информации о напитке"
+      onclick="addInfoDrink()"
+    />
+    <input
+      type="button"
+      value="получение информации о напитке"
+      onclick="getInfoDrink()"
+    />
+    <input
+      type="button"
+      value="удаление информации о напитке"
+      onclick="deleteInfoDrink()"
+    />
+    <input
+      type="button"
+      value="перечень всех напитков"
+      onclick="getKeysInfoDrink()"
+    />
+    <br />
+    <br />
+    <input
+      type="button"
+      value="ввод информации о блюде"
+      onclick="addInfoDish()"
+    />
+    <input
+      type="button"
+      value="получение информации о блюде"
+      onclick="getInfoDish()"
+    />
+    <input
+      type="button"
+      value="удаление информации о блюде"
+      onclick="deleteInfoDish()"
+    />
+    <input
+      type="button"
+      value="перечень всех блюд"
+      onclick="getKeysInfoDish()"
+    />
+
+    <script>
+      // Сlass ES6
+      class ObjStorageFunc {
+        constructor(keyName) {
+          this.objStorage = {};
+          this.keyName = keyName;
+        }
+
+        addValue(key, value) {
+          this.objStorage[key] = value;
+			 this.save();
+			 this.load();
+        }
+
+        deleteValue(key) {
+          if (key in this.objStorage) {
+            delete this.objStorage[key];
+				this.save();
+            return true;
+          }
+          return false;
+        }
+
+		  save(){
+			localStorage[this.keyName]=JSON.stringify(this.objStorage);
+		  }
+
+		  load(){
+			const lsv=localStorage[this.keyName];
+			if(lsv){
+				try{
+				this.objStorage=JSON.parse(lsv);}
+				catch(er){
+					console.error(er);
+				}
+			}
+		  }
+
+        getValue(key) {
+          return this.objStorage[key];
+        }
+
+        getKeys() {
+          return Object.keys(this.objStorage);
+        }
+      }
+
+      // ***************** new object drinkStorage *****************
+      const drinkStorage = new ObjStorageFunc("dr");
+
+      // the function of adding drinks
+      function addInfoDrink() {
+        let drinkName = prompt("название напитка");
+        let isAlcoholic = confirm(
+          "напиток является алкогольным? да-ок/нет-отмена"
+        );
+        let drinkRecipe = prompt("рецепт его приготовления");
+        drinkStorage.addValue(drinkName, {
+          isAlcoholic,
+          drinkRecipe,
+        });
+      }
+      // the function of getting drinks
+      function getInfoDrink() {
+        let drinkName = prompt("название напитка");
+        let drinkInfo = drinkStorage.getValue(drinkName);
+        if (drinkInfo) {
+          let alco = drinkInfo.isAlcoholic ? "да" : "нет";
+          alert(`напиток: ${drinkName}
+алкогольный: ${alco}
+рецепт приготовления:${drinkInfo.drinkRecipe}`);
+        } else alert("введите напиток корректно");
+      }
+
+      // the function of deleting drinks
+      function deleteInfoDrink() {
+        let drinkName = prompt("название напитка");
+        let isDelete = drinkStorage.deleteValue(drinkName);
+        if (isDelete) alert("напиток удален");
+        else alert("такого напитка никогда не было");
+      }
+
+      // the function of displaying a list of drinks
+      function getKeysInfoDrink() {
+        let arrDrinks = drinkStorage.getKeys();
+        alert(arrDrinks.join("/"));
+      }
+
+      // ***************** new object dishStorage *****************
+      const dishStorage = new ObjStorageFunc("ds");
+
+      // the function of adding dishes
+      function addInfoDish() {
+        let dishName = prompt("название блюда");
+        let isAlcoholic = confirm(
+          "блюда является алкогольным? да-ок/нет-отмена"
+        );
+        let dishRecipe = prompt("рецепт его приготовления");
+        dishStorage.addValue(dishName, {
+          isAlcoholic,
+          dishRecipe,
+        });
+      }
+      // the function of getting dishes
+      function getInfoDish() {
+        let dishName = prompt("название блюда");
+        let dishInfo = dishStorage.getValue(dishName);
+        if (dishInfo) {
+          let alco = dishInfo.isAlcoholic ? "да" : "нет";
+          alert(`блюда: ${dishName}
+алкогольный: ${alco}
+рецепт приготовления:${dishInfo.dishRecipe}`);
+        } else alert("введите блюда корректно");
+      }
+
+      // the function of deleting dishes
+      function deleteInfoDish() {
+        let dishName = prompt("название блюда");
+        let isDelete = dishStorage.deleteValue(dishName);
+        if (isDelete) alert("блюда удалено");
+        else alert("такого блюда никогда не было");
+      }
+
+      // the function of displaying a list of dishes
+      function getKeysInfoDish() {
+        let arrdishes = dishStorage.getKeys();
+        alert(arrdishes.join("/"));
+      }
+    </script>
+  </body>
+</html>
