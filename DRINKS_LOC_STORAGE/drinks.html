@@ -56,37 +56,37 @@
         constructor(keyName) {
           this.objStorage = {};
           this.keyName = keyName;
+          this.load();
         }
 
         addValue(key, value) {
           this.objStorage[key] = value;
-			 this.save();
-			 this.load();
+          this.save();
         }
 
         deleteValue(key) {
           if (key in this.objStorage) {
             delete this.objStorage[key];
-				this.save();
+            this.save();
             return true;
           }
           return false;
         }
 
-		  save(){
-			localStorage[this.keyName]=JSON.stringify(this.objStorage);
-		  }
+        save() {
+          localStorage[this.keyName] = JSON.stringify(this.objStorage);
+        }
 
-		  load(){
-			const lsv=localStorage[this.keyName];
-			if(lsv){
-				try{
-				this.objStorage=JSON.parse(lsv);}
-				catch(er){
-					console.error(er);
-				}
-			}
-		  }
+        load() {
+          const lsv = localStorage[this.keyName];
+          if (lsv) {
+            try{
+            this.objStorage = JSON.parse(lsv);}
+            catch(er){
+              console.error(er)
+            }
+          }
+        }
 
         getValue(key) {
           return this.objStorage[key];
